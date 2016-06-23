@@ -1,5 +1,4 @@
-function error = meanSq(theta, visibleSize, hiddenSize,lambda,...
-                        sparsityParam, beta, data,train_type)
+function error = meanSq(theta, visibleSize, hiddenSize, data,train_type)
 
 W1 = reshape(theta(1:hiddenSize*visibleSize), hiddenSize, visibleSize);
 W2 = reshape(theta(hiddenSize*visibleSize+1:2*hiddenSize*visibleSize), visibleSize, hiddenSize);
