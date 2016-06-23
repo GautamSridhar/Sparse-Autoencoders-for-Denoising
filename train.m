@@ -98,8 +98,18 @@ display_network(W1', 12);
 %%======================================================================
 %% STEP 6: Prediction
 testData = imread('');
-output = feedForwardAutoencoder(opttheta, hiddenSize, visibleSize, testData);
-output_image = reshape(output, [21 21]);
+[m,n] = size(testData);
+test_patches = test_patch_create(testData,patchsize);
+
+%output = feedForwardAutoencoder(opttheta, hiddenSize, visibleSize, testData);
+%output_image = reshape(output, [21 21]);
+
+%feedforward all testing examples
+output = feedForwardAutoencoder(opttheta, hiddenSize, visibleSize, test_patches);
+
+%generate output image
+out_img = img_recons(patches,m,n,patchsize);
+
 %%======================================================================
 %% OPTIONAL: Cross Validation
 [error_train,error_val] = crossValidate(X_train,X_val,lambda, sparsityParam, beta,...
