@@ -11,8 +11,8 @@ for i=1:m
     costFunc = @(p) sparseAutoencoderCost(p,visibleSize,hiddenSize,lambda, sparsityParam, beta,X_train(:,1:i),train_type);
     options = optimset('MaxIter', 600);
     [opttheta,~] = fmincg(costFunc,theta,options);
-    [error_train(i),~] = sparseAutoencoderCost(opttheta,visibleSize,hiddenSize,0,sparsityParam,0,X_train(:,1:i),train_type);
-    [error_val(i),~] = sparseAutoencoderCost(opttheta,visibleSize,hiddenSize,0,sparsityParam,0,X_val,train_type);
+    error_train(i) = meanSq(opttheta,visibleSize,hiddenSize,0,sparsityParam,0,X_train(:,1:i),train_type);
+    error_val(i) = meanSq(opttheta,visibleSize,hiddenSize,0,sparsityParam,0,X_val,train_type);
 end
 plot(1:m, error_train, 1:m, error_val);
 title('Learning curve')
