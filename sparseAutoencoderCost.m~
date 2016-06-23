@@ -1,5 +1,5 @@
 function [cost,grad] = sparseAutoencoderCost(theta, visibleSize, hiddenSize, ...
-                                             lambda, sparsityParam, beta, data,train_type)
+                                             lambda, sparsityParam, beta, data)
 
 % visibleSize: the number of input units (probably 64) 
 % hiddenSize: the number of hidden units (probably 25) 
@@ -40,25 +40,15 @@ b2grad = zeros(size(b2));
 % Stated differently, if we were using batch gradient descent to optimize the parameters,
 % the gradient descent update to W1 would be W1 := W1 - alpha * W1grad, and similarly for W2, b1, b2. 
 % 
-[nFeatures, nSamples] = size(data(:,:,1));
+[nFeatures, nSamples] = size(data);
 % first calculate the regular cost function J
 
 switch train_type
     
     case 0
-    data_pert = imnoise(data(:,:,1),'gaussian');
+    data_pert = imnoise(data(:,:,1),'localvar');
     [a1, a2, a3] = getActivation(W1, W2, b1, b2, data_pert);
     errtp = ((a3 - data(:,:,1)) .^ 2) ./ 2;
-    delta3 = -(data(:,:,1) - a3) .* dsigmoid(a3);
-    
-    case 1    
-    
-    data_pert = imnoise(data(:,:,1),'gaussian');    
-    [a1, a2, a3] = getActivation(W1, W2, b1, b2, data_pert);
-    errtp = ((a3 - data(:,:,2)) .^ 2) ./ 2;
-    delta3 = -(data(:,:,2) - a3) .* dsigmoid(a3);
-end
-
     err = sum(sum(errtp)) ./ nSamples;
  % now calculate pj which is the average activation of hidden units
     pj = sum(a2, 2) ./ nSamples;
@@ -69,11 +59,24 @@ end
     err3 = zeros(hiddenSize, 1);
     err3 = err3 + sparsityParam .* log(sparsityParam ./ pj) + (1 - sparsityParam) .* log((1 - sparsityParam) ./ (1 - pj));
     cost = err + err2 + beta * sum(err3);
-   
-
     
-%% Gradient calculation 
-%following are for calculating the grad of weights.
+    
+    case 1    
+        
+    [a1, a2, a3] = getActivation(W1, W2, b1, b2, data(:,:,1));
+    errtp = ((a3 - data(:,:,2)) .^ 2) ./ 2;
+    err = sum(sum(errtp)) ./ nSamples;
+ % now calculate pj which is the average activation of hidden units
+    pj = sum(a2, 2) ./ nSamples;
+% the second part is weight decay part
+    err2 = sum(sum(W1 .^ 2)) + sum(sum(W2 .^ 2));
+    err2 = err2 * lambda / 2;
+% the third part of overall cost function is the sparsity part
+    err3 = zeros(hiddenSize, 1);
+    err3 = err3 + sparsityParam .* log(sparsityParam ./ pj) + (1 - sparsityParam) .* log((1 - sparsityParam) ./ (1 - pj));
+    cost = err + err2 + beta * sum(err3);
+
+% following are for calculating the grad of weights.
 
 delta2 = bsxfun(@plus, (W2' * delta3), beta .* (-sparsityParam ./ pj + (1 - sparsityParam) ./ (1 - pj))); 
 delta2 = delta2 .* dsigmoid(a2);
