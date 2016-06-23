@@ -102,7 +102,7 @@ output = feedForwardAutoencoder(opttheta, hiddenSize, visibleSize, testData);
 output_image = reshape(output, [21 21]);
 %%======================================================================
 %% OPTIONAL: Cross Validation
-[error_train,error_val] = crossValidate(X_train,X_val,lambda, sparsityParam, beta,...
+[error_train,error_val] = crossValidate(X_train_clean,X_train_noise,X_val_clean,X_val_noise, sparsityParam, beta,...
                                                    hiddenSize,visibleSize);
                                                    
 
