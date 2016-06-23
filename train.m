@@ -103,6 +103,6 @@ output_image = reshape(output, [21 21]);
 %%======================================================================
 %% OPTIONAL: Cross Validation
 [error_train,error_val] = crossValidate(X_train,X_val,lambda, sparsityParam, beta,...
-                                                   hiddenSize,visibleSize);
+                                                   hiddenSize,visibleSize,type_train);
                                                    
 
