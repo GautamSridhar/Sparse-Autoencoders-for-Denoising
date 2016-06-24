@@ -1,4 +1,4 @@
-function [X, fX, i] = fmincg(f, X, options, P1, P2, P3, P4, P5)
+function [X, cost,i] = fmincg(f, X, options,Xval,params, P1, P2, P3, P4, P5)
 % Minimize a continuous differentialble multivariate function. Starting point
 % is given by "X" (D by 1), and the function named in the string "f", must
 % return a function value and a vector of partial derivatives. The Polack-
@@ -47,6 +47,8 @@ function [X, fX, i] = fmincg(f, X, options, P1, P2, P3, P4, P5)
 % 2) Output display
 %
 
+
+
 % Read options
 if exist('options', 'var') && ~isempty(options) && isfield(options, 'MaxIter')
     length = options.MaxIter;
@@ -62,10 +64,11 @@ EXT = 3.0;                    % extrapolate maximum 3 times the current bracket
 MAX = 20;                         % max 20 function evaluations per line search
 RATIO = 100;                                      % maximum allowed slope ratio
 
-argstr = ['feval(f, X'];                      % compose string used to call function
-for i = 1:(nargin - 3)
+argstr = 'feval(f, X';                      % compose string used to call function
+for i = 1:(nargin - 5)
   argstr = [argstr, ',P', int2str(i)];
 end
+
 argstr = [argstr, ')'];
 
 if max(size(length)) == 2, red=length(2); length=length(1); else red=1; end
@@ -73,7 +76,10 @@ S=['Iteration '];
 
 i = 0;                                            % zero the run length counter
 ls_failed = 0;                             % no previous line search has failed
+
 fX = [];
+f_val = [];
+
 [f1 df1] = eval(argstr);                      % get function value and gradient
 i = i + (length<0);                                            % count epochs?!
 s = -df1;                                        % search direction is steepest
@@ -86,6 +92,11 @@ while i < abs(length)                                      % while not finished
 
   X0 = X; f0 = f1; df0 = df1;                   % make a copy of current values
   X = X + z1*s;                                             % begin line search
+  
+  a_out = feedForwardAutoencoder(X,params.hiddenSize,params.visibleSize,Xval(:,:,1)');
+  
+  f_valid = sum(sum((a_out -Xval(:,:,2)').^2));
+  
   [f2 df2] = eval(argstr);
   i = i + (length<0);                                          % count epochs?!
   d2 = df2'*s;
@@ -147,8 +158,15 @@ while i < abs(length)                                      % while not finished
 
   if success                                         % if line search succeeded
     f1 = f2; fX = [fX' f1]';
-    fprintf('%s %4i | Cost: %4.6e\r', S, i, f1);
-    plot(i,f1);
+    f_val = [f_val' f_valid]';
+    fprintf(' %s %4i | Training Cost: %4.6e | Validation Cost %4.6e\r \n', S, i, f1, f_valid);
+    
+    plot(i,f1,i,f_valid);
+    title('Plot of loss function')
+    legend('training error','validation error')
+    xlabel('No of iterations')
+    ylabel('loss')
+    
     drawnow;
     s = (df2'*df2-df1'*df2)/(df1'*df1)*s - df2;      % Polack-Ribiere direction
     tmp = df1; df1 = df2; df2 = tmp;                         % swap derivatives
@@ -176,3 +194,7 @@ while i < abs(length)                                      % while not finished
   end
 end
 fprintf('\n');
+
+cost.train = fX; 
+cost.val = f_val;
+end
