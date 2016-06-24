@@ -23,6 +23,7 @@ params.train_type = 0; % 0 or 1 depending on repeated and non repeated case
 
 patches = sampleIMAGES;
 display_network(patches(:,randi(size(patches,2),200,1),1),8);
+save patches
 
 [p,q,~] = size(patches);
 
@@ -87,9 +88,9 @@ theta = initializeParameters(params.hiddenSize, params.visibleSize);
                           % function. L-BFGS can also be used as in the original exercise 
                           % code
 options = optimset('MaxIter', 400);	  % Maximum number of iterations of L-BFGS to run 
-%options.display = 'on';
+options.display = 'on';
 
-
+figure;
 [opttheta, cost] = fmincg( @(p) sparseAutoencoderCost(p, ...
                                    params.visibleSize, params.hiddenSize, ...
                                    params.lambda, params.sparsityParam, ...

@@ -95,7 +95,7 @@ while i < abs(length)                                      % while not finished
   
   a_out = feedForwardAutoencoder(X,params.hiddenSize,params.visibleSize,Xval(:,:,1)');
   
-  f_valid = sum(sum((a_out -Xval(:,:,2)').^2));
+  f_valid = mean(sqrt(sum(((a_out -Xval(:,:,2)').^2),2)),1);
   
   [f2 df2] = eval(argstr);
   i = i + (length<0);                                          % count epochs?!
@@ -159,7 +159,7 @@ while i < abs(length)                                      % while not finished
   if success                                         % if line search succeeded
     f1 = f2; fX = [fX' f1]';
     f_val = [f_val' f_valid]';
-    fprintf(' %s %4i | Training Cost: %4.6e | Validation Cost %4.6e\r \n', S, i, f1, f_valid);
+    fprintf(' %s %4i of %4i | Training Cost: %4.6e | Validation Cost %4.6e\r \n', S, i,abs(length), f1, f_valid);
     
     plot(i,f1,i,f_valid);
     title('Plot of loss function')
