@@ -148,7 +148,12 @@ while i < abs(length)                                      % while not finished
   if success                                         % if line search succeeded
     f1 = f2; fX = [fX' f1]';
     fprintf('%s %4i | Cost: %4.6e\r', S, i, f1);
+    
     plot(i,f1);
+    title('Plot of loss function')
+    xlabel('No of iterations')
+    ylabel('loss')
+    
     drawnow;
     s = (df2'*df2-df1'*df2)/(df1'*df1)*s - df2;      % Polack-Ribiere direction
     tmp = df1; df1 = df2; df2 = tmp;                         % swap derivatives

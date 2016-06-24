@@ -3,8 +3,8 @@
 %% STEP 0: Here we provide the relevant parameters values that will
 %  allow your sparse autoencoder to get good filters; you do not need to 
 %  change the parameters below.
-
-visibleSize = 21*21;   % number of input units 
+patchsize = 21;
+visibleSize = patchsize*patchsize;   % number of input units 
 hiddenSize = 600;     % number of hidden units 
 sparsityParam = 0.01;   % desired average activation of the hidden units.
                      % (This was denoted by the Greek alphabet rho, which looks like a lower-case "p",
@@ -26,45 +26,45 @@ display_network(patches(:,randi(size(patches,2),200,1),1),8);
 theta = initializeParameters(hiddenSize, visibleSize);
 
 %%======================================================================
-%% STEP 2: Implement sparseAutoencoderCost
-%  Feel free to change the training settings when debugging your
-%  code.  (For example, reducing the training set size or 
-%  number of hidden units may make your code run faster; and setting beta 
-%  and/or lambda to zero may be helpful for debugging.)  However, in your 
-%  final submission of the visualized weights, please use parameters we 
-%  gave in Step 0 above.
-
-[cost, grad] = sparseAutoencoderCost(theta, visibleSize, hiddenSize, lambda, ...
-                                     sparsityParam, beta, patches,train_type);
-
-%%======================================================================
-%% STEP 3: Gradient Checking
-%
-% Hint: If you are debugging your code, performing gradient checking on smaller models 
-% and smaller training sets (e.g., using only 10 training examples and 1-2 hidden 
-% units) may speed things up.
-
-% First, lets make sure your numerical gradient computation is correct for a
-% simple function.  After you have implemented computeNumericalGradient.m,
-% run the following: 
-checkNumericalGradient();
-
-% Now we can use it to check your cost function and derivative calculations
-% for the sparse autoencoder.  
-numgrad = computeNumericalGradient( @(x) sparseAutoencoderCost(x, visibleSize, ...
-                                                 hiddenSize, lambda, ...
-                                                  sparsityParam, beta, ...
-                                                 patches,train_type), theta);
-
-% Use this to visually compare the gradients side by side
-disp([numgrad grad]); 
-
-% Compare numerically computed gradients with the ones obtained from backpropagation
-diff = norm(numgrad-grad)/norm(numgrad+grad);
-disp(diff); % Should be small. In our implementation, these values are
-            % usually less than 1e-9.
-
-            % When you got this working, Congratulations!!! 
+% %% STEP 2: Implement sparseAutoencoderCost
+% %  Feel free to change the training settings when debugging your
+% %  code.  (For example, reducing the training set size or 
+% %  number of hidden units may make your code run faster; and setting beta 
+% %  and/or lambda to zero may be helpful for debugging.)  However, in your 
+% %  final submission of the visualized weights, please use parameters we 
+% %  gave in Step 0 above.
+% 
+% [cost, grad] = sparseAutoencoderCost(theta, visibleSize, hiddenSize, lambda, ...
+%                                      sparsityParam, beta, patches,train_type);
+% 
+% %%======================================================================
+% %% STEP 3: Gradient Checking
+% %
+% % Hint: If you are debugging your code, performing gradient checking on smaller models 
+% % and smaller training sets (e.g., using only 10 training examples and 1-2 hidden 
+% % units) may speed things up.
+% 
+% % First, lets make sure your numerical gradient computation is correct for a
+% % simple function.  After you have implemented computeNumericalGradient.m,
+% % run the following: 
+% checkNumericalGradient();
+% 
+% % Now we can use it to check your cost function and derivative calculations
+% % for the sparse autoencoder.  
+% numgrad = computeNumericalGradient( @(x) sparseAutoencoderCost(x, visibleSize, ...
+%                                                  hiddenSize, lambda, ...
+%                                                   sparsityParam, beta, ...
+%                                                  patches,train_type), theta);
+% 
+% % Use this to visually compare the gradients side by side
+% disp([numgrad grad]); 
+% 
+% % Compare numerically computed gradients with the ones obtained from backpropagation
+% diff = norm(numgrad-grad)/norm(numgrad+grad);
+% disp(diff); % Should be small. In our implementation, these values are
+%             % usually less than 1e-9.
+% 
+%             % When you got this working, Congratulations!!! 
 
 %%======================================================================
 %% STEP 4: After verifying that your implementation of
@@ -95,9 +95,9 @@ options = optimset('MaxIter', 400);	  % Maximum number of iterations of L-BFGS t
 W1 = reshape(opttheta(1:hiddenSize*visibleSize), hiddenSize, visibleSize);
 display_network(W1', 12); 
   % save the visualization to a file 
-%%======================================================================
+%======================================================================
 %% STEP 6: Prediction
-testData = imread('');
+testData = imread('cameraman.tif');
 [m,n] = size(testData);
 test_patches = test_patch_create(testData,patchsize);
 
@@ -108,8 +108,8 @@ test_patches = test_patch_create(testData,patchsize);
 output = feedForwardAutoencoder(opttheta, hiddenSize, visibleSize, test_patches);
 
 %generate output image
-out_img = img_recons(patches,m,n,patchsize);
-
+out_img = img_recons(output,m,n,patchsize);
+figure;imshow(out_img,[])
 %%======================================================================
 %% OPTIONAL: Cross Validation
 [error_train,error_val] = crossValidate(X_train,X_val,lambda, sparsityParam, beta,...
