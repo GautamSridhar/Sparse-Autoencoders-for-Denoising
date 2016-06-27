@@ -1,11 +1,11 @@
-function patches = sampleIMAGES()
+function patches = sampleIMAGES(train_type,patchsize)
 % sampleIMAGES
 % Returns 10000 patches for training
 
 load IMAGES;    % load images from disk 
 
-patchsize = 21; %AE input patchsize
-swind_hsize = 21;% half size of search window
+%patchsize = 21; %AE input patchsize
+swind_hsize = patchsize;% half size of search window
 s =(patchsize-1)/2 ; 
 sim_wind = 3;   % measure of side of patch for similarity 
 numpatches = 10000;
@@ -53,8 +53,8 @@ for  i=1:numpatches
     
     patch_mod(s:s+2,s:s+2) = temp_patch_copy(s:s+2,s:s+2);    
     patches(:,i,1) =reshape(patch_mod,[patchsize^2 1]);
-    n = 1;
-    switch n
+    
+    switch train_type
         case 0
     patches(:,i,2) =reshape(patch_mod,[patchsize^2 1]);
         case 1
