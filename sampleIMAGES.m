@@ -8,7 +8,7 @@ patchsize = 21; %AE input patchsize
 swind_hsize = 21;% half size of search window
 s =(patchsize-1)/2 ; 
 sim_wind = 3;   % measure of side of patch for similarity 
-numpatches = 10;
+numpatches = 10000;
 
 % Initialize patches with zeros.  Your code will fill in this matrix--one
 % column per patch, 10000 columns. 

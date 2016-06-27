@@ -95,7 +95,7 @@ while i < abs(length)                                      % while not finished
   
   a_out = feedForwardAutoencoder(X,params.hiddenSize,params.visibleSize,Xval(:,:,1)');
   
-  f_valid = sum(sum((a_out -Xval(:,:,2)').^2));
+  f_valid = mean(sqrt(sum(((a_out -Xval(:,:,2)').^2),2)),1);
   
   [f2 df2] = eval(argstr);
   i = i + (length<0);                                          % count epochs?!
@@ -125,10 +125,13 @@ while i < abs(length)                                      % while not finished
       z3 = z3-z2;                    % z3 is now relative to the location of z2
     end
     if f2 > f1+z1*RHO*d1 || d2 > -SIG*d1
-      break;                                                % this is a failure
+      fprintf('case 0')
+        break;                                                % this is a failure
     elseif d2 > SIG*d1
-      success = 1; break;                                             % success
+      success = 1; break;
+      fprintf('case 1')% success
     elseif M == 0
+        fprintf('case 2')
       break;                                                          % failure
     end
     A = 6*(f2-f3)/z3+3*(d2+d3);                      % make cubic extrapolation
@@ -159,7 +162,7 @@ while i < abs(length)                                      % while not finished
   if success                                         % if line search succeeded
     f1 = f2; fX = [fX' f1]';
     f_val = [f_val' f_valid]';
-    fprintf(' %s %4i | Training Cost: %4.6e | Validation Cost %4.6e\r \n', S, i, f1, f_valid);
+    fprintf(' %s %4i of %4i | Training Cost: %4.6e | Validation Cost %4.6e\r \n', S, i,abs(length), f1, f_valid);
     
     plot(i,f1,i,f_valid);
     title('Plot of loss function')
@@ -181,7 +184,8 @@ while i < abs(length)                                      % while not finished
   else
     X = X0; f1 = f0; df1 = df0;  % restore point from before failed line search
     if ls_failed || i > abs(length)          % line search failed twice in a row
-      break;                             % or we ran out of time, so we give up
+      fprintf('case 4')
+        break;                             % or we ran out of time, so we give up
     end
     tmp = df1; df1 = df2; df2 = tmp;                         % swap derivatives
     s = -df1;                                                    % try steepest
