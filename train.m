@@ -13,7 +13,7 @@ params.sparsityParam = 0.01;   % desired average activation of the hidden units.
                      % (This was denoted by the Greek alphabet rho, which looks like a lower-case "p",
 		     %  in the lecture notes). 
 params.lambda = 0.0001;     % weight decay parameter       
-params.beta = 3;            % weight of sparsity penalty term       
+params.beta = 0.01;            % weight of sparsity penalty term       
 params.train_type = 0; % 0 or 1 depending on repeated and non repeated case
 %%======================================================================
 %% STEP 1: Implement sampleIMAGES
@@ -87,7 +87,7 @@ theta = initializeParameters(params.hiddenSize, params.visibleSize);
 %options.Method = 'lbfgs'; % Here, we use conjugate gradient to optimize our cost
                           % function. L-BFGS can also be used as in the original exercise 
                           % code
-options = optimset('MaxIter', 400);	  % Maximum number of iterations of L-BFGS to run 
+options = optimset('MaxIter', 600);	  % Maximum number of iterations of L-BFGS to run 
 options.display = 'on';
 
 figure;
@@ -101,7 +101,7 @@ figure;
 %% STEP 5: Visualization 
 
 W1 = reshape(opttheta(1:params.hiddenSize*params.visibleSize), params.hiddenSize, params.visibleSize);
-display_network(W1', 12); 
+figure;display_network(W1', 12); 
 savefig('kernels.png','png')
   % save the visualization to a file 
 %======================================================================

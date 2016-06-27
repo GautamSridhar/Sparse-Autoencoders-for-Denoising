@@ -23,3 +23,15 @@ ahidden = sigmoid(ahidden);
 aoutput = bsxfun(@plus, W2 * ahidden, b2);
 aoutput = sigmoid(aoutput);
 end
+
+function sigm = sigmoid(x)
+ 
+sigm = 1 ./ (1 + exp(-x));
+end
+ 
+%-------------------------------------------------------------------
+% This function calculate dSigmoid
+%
+function dsigm = dsigmoid(a)
+dsigm = a .* (1.0 - a);
+end
