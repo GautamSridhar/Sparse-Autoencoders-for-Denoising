@@ -28,7 +28,7 @@ patches = zeros(patchsize*patchsize, numpatches,2);
 %  Image 1
 
 for  i=1:numpatches
-        d = randi(10,1);
+        d = randi(size(IMAGES,3),1);
     
     %extract size of selected random image
     img = IMAGES(:,:,d);

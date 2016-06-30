@@ -1,6 +1,4 @@
 %% 
-clear all
-close all
 
 %%======================================================================
 %% STEP 0: Here we provide the relevant parameters values that will
@@ -15,16 +13,18 @@ params.sparsityParam = 0.01;   % desired average activation of the hidden units.
 params.lambda = 0.0001;     % weight decay parameter       
 params.beta = 0.01;            % weight of sparsity penalty term       
 params.train_type = 0; % 0 or 1 depending on repeated and non repeated case
+params.batchsize = 250;
+params.alpha = 0.1;
 %%======================================================================
 %% STEP 1: Implement sampleIMAGES
 %
 %  After implementing sampleIMAGES, the display_network command should
 %  display a random sample of 200 patches from the dataset
 
-patches = sampleIMAGES(params.train_type,params.patchsize);
-display_network(patches(:,randi(size(patches,2),200,1),1),8);
-save patches
-
+%patches = sampleIMAGES(params.train_type,params.patchsize);
+%display_network(patches(:,randi(size(patches,2),200,1),1),8);
+%save patches
+load patches
 [p,q,~] = size(patches);
 
 Xtrain = patches(:,1:ceil(0.6*q),:);
@@ -86,17 +86,13 @@ theta = initializeParameters(params.hiddenSize, params.visibleSize);
 %addpath minFunc/
 
 options = optimset('MaxIter', 600);	  % Maximum number of iterations of L-BFGS to run 
-options.display = 'on';
-options.Method = 'LBFGS'; % Here, we use conjugate gradient to optimize our cost
+%options.display = 'on';
+% options.Method = 'LBFGS'; % Here, we use conjugate gradient to optimize our cost
                           % function. L-BFGS can also be used as in the original exercise 
                           % code
+                          
 figure;
-[opttheta, cost,~,output] = minFunc( @(p) sparseAutoencoderCost(p, ...
-                                   params.visibleSize, params.hiddenSize, ...
-                                   params.lambda, params.sparsityParam, ...
-                                   params.beta, Xtrain,params.train_type), ...
-                              theta, options);
-
+[opttheta, cost] = fmincg(@(p)sparseAutoencoderCost(p,params.visibleSize,params.hiddenSize,params.lambda,params.sparsityParam,params.beta,Xtrain,params.train_type),theta,options,Xval,params); 
 %%======================================================================
 %% STEP 5: Visualization 
 

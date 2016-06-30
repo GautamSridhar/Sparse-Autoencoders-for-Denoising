@@ -29,10 +29,10 @@ for k = 1:numel
  j_2 = abs(j_2 -ceil(hp2/2));
  
  
-    dist_euc =sqrt((i_1 -i_2)^2+(j_1 -j_2)^2);
+    %dist_euc =sqrt((i_1 -i_2)^2+(j_1 -j_2)^2);
     
     dist_int = sqrt(sum((patch_d -s_dict(k)).^2));
-    weight(k) = exp(-dist_int/h)* exp(-dist_euc/h);
+    weight(k) = exp(-dist_int/h);
 end
 
 weight = weight / sum(weight);
