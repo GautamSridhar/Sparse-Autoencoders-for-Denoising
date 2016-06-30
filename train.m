@@ -27,8 +27,8 @@ save patches
 
 [p,q,~] = size(patches);
 
-Xtrain = patches(:,1:ceil(0.6*q),:);
-Xval = patches(:,ceil(0.6*q)+1:end,:);
+Xtrain = patches(:,1:floor(0.8*q),:);
+Xval = patches(:,ceil(0.8*q)+1:end,:);
 
 %  Obtain random parameters theta
 theta = initializeParameters(params.hiddenSize, params.visibleSize);
@@ -106,10 +106,17 @@ savefig('kernels.png','png')
   % save the visualization to a file 
 %======================================================================
 %% STEP 6: Prediction
+
 testData = imread('cameraman.tif');
-figure; subplot(2,1,1);
+figure; subplot(3,1,1);
 imshow(testData,[])
+testData = imnoise(testData,'gaussian',0,0.01);
+testData =imnoise(testData,'poisson');
+testData =imnoise(testData,'speckle',0.2);
 [m,n] = size(testData);
+
+subplot(3,1,2);
+imshow(testData,[])
 test_patches = test_patch_create(testData,params.patchsize);
 
 %output = feedForwardAutoencoder(opttheta, hiddenSize, visibleSize, testData);
@@ -120,11 +127,5 @@ output = feedForwardAutoencoder(opttheta, params.hiddenSize, params.visibleSize,
 
 %generate output image
 out_img = img_recons(output,m,n,params.patchsize);
-subplot(2,1,2);imshow(out_img,[])
+subplot(3,1,3);imshow(out_img,[])
 savefig('testing example.png','png')
-%%======================================================================
-%% OPTIONAL: Cross Validation
-% [error_train,error_val] = crossValidate(X_train,X_val,lambda, sparsityParam, beta,...
-%                                                    hiddenSize,visibleSize,type_train);
-                                                   
-
