@@ -1,17 +1,18 @@
-function patches = sampleIMAGES(train_type,patchsize)
+function patches = sampleIMAGES()
 % sampleIMAGES
 % Returns 10000 patches for training
 
-load IMAGES;    % load images from disk 
+load IMAGES_IN;    % load images from disk 
 
-%patchsize = 21; %AE input patchsize
-swind_hsize = patchsize;% half size of search window
+patchsize = 21; %AE input patchsize
+
 s =(patchsize-1)/2 ; 
 sim_wind = 3;   % measure of side of patch for similarity 
 numpatches = 10000;
-
+swind_hsize = (sim_wind-1)/2;% half size of search window
 % Initialize patches with zeros.  Your code will fill in this matrix--one
-% column per patch, 10000 columns. 
+% column per patch, 10000 columns.
+load s_d
 patches = zeros(patchsize*patchsize, numpatches,2);
 
 %% ---------- YOUR CODE HERE --------------------------------------
@@ -28,10 +29,10 @@ patches = zeros(patchsize*patchsize, numpatches,2);
 %  Image 1
 
 for  i=1:numpatches
-        d = randi(size(IMAGES,3),1);
+        d = randi(size(IMAGES_IN,3),1);
     
     %extract size of selected random image
-    img = IMAGES(:,:,d);
+    img = IMAGES_IN(:,:,d);
     [m,n,p] = size(img);
     if (p == 3)
     img = rgb2gray(img);
@@ -40,28 +41,29 @@ for  i=1:numpatches
     img = mat2gray(img);
     img = im2double(img);
 
-    img_padded = padarray(img,[swind_hsize,swind_hsize],'replicate');
+    img_padded = padarray(double(img),[swind_hsize,swind_hsize],'replicate');
 
     %center of patch
-    r = swind_hsize+randi([s+1,m-s],1);
-    c = swind_hsize+randi([s+1,n-s],1);
+    r = randi([s+1,m-s],1);
+    c = randi([s+1,n-s],1);
  
-    search_window = img_padded(r-swind_hsize-s:r+swind_hsize+s,c-swind_hsize-s:c+swind_hsize+s);
+    
     temp_patch = img_padded(r-s:r+s,c-s:c+s);
-    temp_patch_copy = temp_patch;
-    patch_mod = modify_patch(temp_patch,search_window,sim_wind);
+    patch_dictionary_mod = create_weighted_patch_2(reshape(patch,[1,sim_wind^2]),s_d,sim_wind,patchsize);
+    patch_dictionary_mod = vertcat(reshape(temp_patch,[1 sim_wind^2]),patch_dictionary_mod);
     
-    patch_mod(s:s+2,s:s+2) = temp_patch_copy(s:s+2,s:s+2);    
-    patches(:,i,1) =reshape(patch_mod,[patchsize^2 1]);
-    
-    switch train_type
+    out = patch_reconst(patch_dictionary_mod,patchsize,sim_wind);
+    patches(:,i,1) = reshape(out,[patchsize^2 1]);
+    n = 0;
+    switch n
         case 0
-    patches(:,i,2) =reshape(patch_mod,[patchsize^2 1]);
+    patches(:,i,2) =reshape(out,[patchsize^2 1]);
         case 1
-    patches(:,i,2) =reshape(repmat(temp_patch_copy(s:s+2,s:s+2),[patchsize/sim_wind,patchsize/sim_wind]),[patchsize^2 1]);        
+    patches(:,i,2) =reshape(repmat(temp_patch,[patchsize/sim_wind,patchsize/sim_wind]),[patchsize^2 1]);        
         otherwise
             disp('not a valid option')
     end
+    clear patch_dictionary_mod
 end
 
 
