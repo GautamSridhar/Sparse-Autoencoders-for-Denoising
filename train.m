@@ -1,4 +1,6 @@
-%% 
+%% comment put the part before load patches to avoid fresh creation of testing dataset
+clear all
+close all
 
 %%======================================================================
 %% STEP 0: Here we provide the relevant parameters values that will
@@ -21,9 +23,9 @@ params.alpha = 0.1;
 %  After implementing sampleIMAGES, the display_network command should
 %  display a random sample of 200 patches from the dataset
 
-%patches = sampleIMAGES(params.train_type,params.patchsize);
-%display_network(patches(:,randi(size(patches,2),200,1),1),8);
-%save patches
+patches = sampleIMAGES(params.train_type,params.patchsize);
+display_network(patches(:,randi(size(patches,2),200,1),1),8);
+save patches
 load patches
 [p,q,~] = size(patches);
 

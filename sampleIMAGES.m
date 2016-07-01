@@ -1,15 +1,16 @@
-function patches = sampleIMAGES()
+function patches = sampleIMAGES(train_type,patchsize)
 % sampleIMAGES
 % Returns 10000 patches for training
 
 load IMAGES_IN;    % load images from disk 
 
-patchsize = 21; %AE input patchsize
+ %AE input patchsize
 
-s =(patchsize-1)/2 ; 
+% s =(patchsize-1)/2 ; 
 sim_wind = 3;   % measure of side of patch for similarity 
 numpatches = 10000;
 swind_hsize = (sim_wind-1)/2;% half size of search window
+s = swind_hsize;
 % Initialize patches with zeros.  Your code will fill in this matrix--one
 % column per patch, 10000 columns.
 load s_d
@@ -49,13 +50,13 @@ for  i=1:numpatches
  
     
     temp_patch = img_padded(r-s:r+s,c-s:c+s);
-    patch_dictionary_mod = create_weighted_patch_2(reshape(patch,[1,sim_wind^2]),s_d,sim_wind,patchsize);
+    patch_dictionary_mod = create_weighted_patch_2(reshape(temp_patch,[1,sim_wind^2]),s_d,sim_wind,patchsize);
     patch_dictionary_mod = vertcat(reshape(temp_patch,[1 sim_wind^2]),patch_dictionary_mod);
     
     out = patch_reconst(patch_dictionary_mod,patchsize,sim_wind);
     patches(:,i,1) = reshape(out,[patchsize^2 1]);
-    n = 0;
-    switch n
+    
+    switch train_type
         case 0
     patches(:,i,2) =reshape(out,[patchsize^2 1]);
         case 1
