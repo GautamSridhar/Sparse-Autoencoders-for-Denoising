@@ -8,12 +8,12 @@ close all
 %  change the parameters below.
 params.patchsize = 21;
 params.visibleSize = params.patchsize* params.patchsize;   % number of input units 
-params.hiddenSize = 500;     % number of hidden units 
-params.sparsityParam = 0.05;   % desired average activation of the hidden units.
+params.hiddenSize = 600;     % number of hidden units 
+params.sparsityParam = 0.01;   % desired average activation of the hidden units.
                      % (This was denoted by the Greek alphabet rho, which looks like a lower-case "p",
 		     %  in the lecture notes). 
 params.lambda = 0.0001;     % weight decay parameter       
-params.beta = 0.01;            % weight of sparsity penalty term       
+params.beta = 0.001;            % weight of sparsity penalty term       
 params.train_type = 0; % 0 or 1 depending on repeated and non repeated case
 params.batchsize = 250;
 params.alpha = 0.1;
@@ -22,11 +22,10 @@ params.alpha = 0.1;
 %
 %  After implementing sampleIMAGES, the display_network command should
 %  display a random sample of 200 patches from the dataset
-load patches
 % patches = sampleIMAGES(params.train_type,params.patchsize);
-display_network(patches(:,randi(size(patches,2),200,1),1),8);
 % save patches
-
+load patches
+display_network(patches(:,randi(size(patches,2),200,1),1),8);
 [p,q,~] = size(patches);
 
 Xtrain = patches(:,1:ceil(0.6*q),:);
@@ -88,12 +87,12 @@ theta = initializeParameters(params.hiddenSize, params.visibleSize);
 %addpath minFunc/
 
 options = optimset('MaxIter', 600);	  % Maximum number of iterations of L-BFGS to run 
-%options.display = 'on';
-% options.Method = 'LBFGS'; % Here, we use conjugate gradient to optimize our cost
+options.display = 'on';
+options.Method = 'LBFGS'; % Here, we use conjugate gradient to optimize our cost
                           % function. L-BFGS can also be used as in the original exercise 
                           % code
-                          
-[opttheta, cost] = fmincg(@(p)sparseAutoencoderCost(p,params.visibleSize,params.hiddenSize,params.lambda,params.sparsityParam,params.beta,Xtrain,params.train_type),theta,options,Xval,params); 
+ [opttheta, cost,exitflag,output]= minFunc(@(p)sparseAutoencoderCost(p,params.visibleSize,params.hiddenSize,params.lambda,params.sparsityParam,params.beta,Xtrain,params.train_type),theta,options);                         
+%[opttheta, cost] = fmincg(@(p)sparseAutoencoderCost(p,params.visibleSize,params.hiddenSize,params.lambda,params.sparsityParam,params.beta,Xtrain,params.train_type),theta,options,Xval,params); 
 %%======================================================================
 %% STEP 5: Visualization 
 
@@ -106,8 +105,10 @@ savefig('kernels.png','png')
 testData = imread('cameraman.tif');
 figure; subplot(3,1,1);
 imshow(testData,[])
-testData = imnoise(testData,'gaussian');
-testData =imnoise(testData,'poisson');
+G = fspecial('gaussian',[3,3],1);
+%testData = imnoise(testData,'gaussian',0,0.001);
+testData = imfilter(testData,G,'same');
+%testData =imnoise(testData,'salt & pepper');
 testData =imnoise(testData,'speckle');
 [m,n] = size(testData);
 
