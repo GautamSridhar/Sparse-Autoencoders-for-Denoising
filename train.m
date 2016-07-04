@@ -9,7 +9,7 @@ close all
 params.patchsize = 21;
 params.visibleSize = params.patchsize* params.patchsize;   % number of input units 
 params.hiddenSize = 500;     % number of hidden units 
-params.sparsityParam = 0.01;   % desired average activation of the hidden units.
+params.sparsityParam = 0;   % desired average activation of the hidden units.
                      % (This was denoted by the Greek alphabet rho, which looks like a lower-case "p",
 		     %  in the lecture notes). 
 params.lambda = 0.0001;     % weight decay parameter       
@@ -22,11 +22,11 @@ params.alpha = 0.1;
 %
 %  After implementing sampleIMAGES, the display_network command should
 %  display a random sample of 200 patches from the dataset
-
-patches = sampleIMAGES(params.train_type,params.patchsize);
-display_network(patches(:,randi(size(patches,2),200,1),1),8);
-save patches
 load patches
+% patches = sampleIMAGES(params.train_type,params.patchsize);
+display_network(patches(:,randi(size(patches,2),200,1),1),8);
+% save patches
+
 [p,q,~] = size(patches);
 
 Xtrain = patches(:,1:ceil(0.6*q),:);
@@ -93,7 +93,6 @@ options = optimset('MaxIter', 600);	  % Maximum number of iterations of L-BFGS t
                           % function. L-BFGS can also be used as in the original exercise 
                           % code
                           
-figure;
 [opttheta, cost] = fmincg(@(p)sparseAutoencoderCost(p,params.visibleSize,params.hiddenSize,params.lambda,params.sparsityParam,params.beta,Xtrain,params.train_type),theta,options,Xval,params); 
 %%======================================================================
 %% STEP 5: Visualization 
@@ -126,6 +125,7 @@ output = feedForwardAutoencoder(opttheta, params.hiddenSize, params.visibleSize,
 out_img = img_recons(output,m,n,params.patchsize);
 subplot(3,1,3);imshow(out_img,[])
 savefig('testing example.png','png')
+imwrite(out_img,'output.tif');
 %%======================================================================
 %% OPTIONAL: Cross Validation
 % [error_train,error_val] = crossValidate(X_train,X_val,lambda, sparsityParam, beta,...

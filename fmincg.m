@@ -86,7 +86,7 @@ s = -df1;                                        % search direction is steepest
 d1 = -s'*s;                                                 % this is the slope
 z1 = red/(1-d1);                                  % initial step is red/(|s|+1)
 figure; hold on;
-axis([1 length 0 50]);
+axis([1 length 0 10]);
 while i < abs(length)                                      % while not finished
   i = i + (length>0);                                      % count iterations?!
 
