@@ -1,6 +1,6 @@
 function [cost,grad] = sparseAutoencoderCost(theta, visibleSize, hiddenSize, ...
                                              lambda, sparsityParam, beta, data,train_type)
-
+patchsize =21;
 % visibleSize: the number of input units (probably 64) 
 % hiddenSize: the number of hidden units (probably 25) 
 % lambda: weight decay parameter
@@ -46,14 +46,14 @@ b2grad = zeros(size(b2));
 switch train_type
     
     case 0
-    data_pert = imnoise(data(:,:,1),'gaussian');
+    data_pert = add_noise(data(:,:,1),patchsize);
     [a1, a2, a3] = getActivation(W1, W2, b1, b2, data_pert);
     errtp = ((a3 - data(:,:,1)) .^ 2) ./ 2;
     delta3 = -(data(:,:,1) - a3) .* dsigmoid(a3);
     
     case 1    
     
-    data_pert = imnoise(data(:,:,1),'gaussian');    
+    data_pert = add_noise(data(:,:,1),patchsize);    
     [a1, a2, a3] = getActivation(W1, W2, b1, b2, data_pert);
     errtp = ((a3 - data(:,:,2)) .^ 2) ./ 2;
     delta3 = -(data(:,:,2) - a3) .* dsigmoid(a3);

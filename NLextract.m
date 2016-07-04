@@ -4,8 +4,8 @@ zer = (patchWindow - 1)/2;                          %padding the image to ensure
 I1 = padarray(I,[zer zer],'replicate');
 [m,n] = size(I);
 count2 = 1;
-for i = 1:m
-    for j = 1:n
+for i = 1:100
+    for j = 1:100
         i1 = i + zer;
         j1 = j + zer;
         patch = I1(i1-zer:i1+zer,j1-zer:j1+zer);
@@ -25,9 +25,11 @@ for i = 1:m
         intmat = [d;feat];         % number of features generated is equal to the number of distances generated
         intmat = intmat';          % transpose to use sortrows
         intmat = sortrows(intmat); % sort on the basis of the distance
-        patchpix(:,:,count2) = intmat(1:49,2:10); % third dimension indicates each pixel
+        intmat = intmat';
+        patchpix(:,count2) = reshape(intmat(2:10,1:49),[441,1]); % third dimension indicates each pixel
                                                   % each row in each matrix is the nearest patch.  
         count2 = count2 + 1;
+        count2
     end
 end
 

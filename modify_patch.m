@@ -45,7 +45,7 @@ patch_dictionary = (patch_dictionary(2:end,:));
 numel = size(patch_dictionary,1);
 
 for i = 1:numel
-  patch_dictionary(i,:) = create_weighted_patch(patch_dictionary(i,:),search_dictionary,i,m/sim_wind,r/sim_wind);
+  patch_dictionary(i,:) = create_weighted_patch(patch_dictionary((numel-1)/2+1,:),search_dictionary,i,m/sim_wind,r/sim_wind);
 end
     
 
