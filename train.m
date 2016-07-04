@@ -1,4 +1,4 @@
-%% 
+%% comment put the part before load patches to avoid fresh creation of testing dataset
 clear all
 close all
 
@@ -8,22 +8,24 @@ close all
 %  change the parameters below.
 params.patchsize = 21;
 params.visibleSize = params.patchsize* params.patchsize;   % number of input units 
-params.hiddenSize = 600;     % number of hidden units 
-params.sparsityParam = 0.01;   % desired average activation of the hidden units.
+params.hiddenSize = 500;     % number of hidden units 
+params.sparsityParam = 0.05;   % desired average activation of the hidden units.
                      % (This was denoted by the Greek alphabet rho, which looks like a lower-case "p",
 		     %  in the lecture notes). 
 params.lambda = 0.0001;     % weight decay parameter       
 params.beta = 0.01;            % weight of sparsity penalty term       
 params.train_type = 0; % 0 or 1 depending on repeated and non repeated case
+params.batchsize = 250;
+params.alpha = 0.1;
 %%======================================================================
 %% STEP 1: Implement sampleIMAGES
 %
 %  After implementing sampleIMAGES, the display_network command should
 %  display a random sample of 200 patches from the dataset
-
-patches = sampleIMAGES;
+load patches
+% patches = sampleIMAGES(params.train_type,params.patchsize);
 display_network(patches(:,randi(size(patches,2),200,1),1),8);
-save patches
+% save patches
 
 [p,q,~] = size(patches);
 
@@ -31,7 +33,7 @@ Xtrain = patches(:,1:floor(0.8*q),:);
 Xval = patches(:,ceil(0.8*q)+1:end,:);
 
 %  Obtain random parameters theta
-theta = initializeParameters(params.hiddenSize, params.visibleSize);
+%theta = initializeParameters(params.hiddenSize, params.visibleSize);
 
 %%======================================================================
 % %% STEP 2: Implement sparseAutoencoderCost
@@ -84,19 +86,14 @@ theta = initializeParameters(params.hiddenSize, params.visibleSize);
 
 %  Use minFunc to minimize the function
 %addpath minFunc/
-%options.Method = 'lbfgs'; % Here, we use conjugate gradient to optimize our cost
+
+options = optimset('MaxIter', 600);	  % Maximum number of iterations of L-BFGS to run 
+%options.display = 'on';
+% options.Method = 'LBFGS'; % Here, we use conjugate gradient to optimize our cost
                           % function. L-BFGS can also be used as in the original exercise 
                           % code
-options = optimset('MaxIter', 600);	  % Maximum number of iterations of L-BFGS to run 
-options.display = 'on';
-
-figure;
-[opttheta, cost] = fmincg( @(p) sparseAutoencoderCost(p, ...
-                                   params.visibleSize, params.hiddenSize, ...
-                                   params.lambda, params.sparsityParam, ...
-                                   params.beta, Xtrain,params.train_type), ...
-                              theta, options,Xval,params);
-
+                          
+[opttheta, cost] = fmincg(@(p)sparseAutoencoderCost(p,params.visibleSize,params.hiddenSize,params.lambda,params.sparsityParam,params.beta,Xtrain,params.train_type),theta,options,Xval,params); 
 %%======================================================================
 %% STEP 5: Visualization 
 
@@ -110,9 +107,9 @@ savefig('kernels.png','png')
 testData = imread('cameraman.tif');
 figure; subplot(3,1,1);
 imshow(testData,[])
-testData = imnoise(testData,'gaussian',0,0.01);
+testData = imnoise(testData,'gaussian');
 testData =imnoise(testData,'poisson');
-testData =imnoise(testData,'speckle',0.2);
+testData =imnoise(testData,'speckle');
 [m,n] = size(testData);
 
 subplot(3,1,2);
@@ -129,3 +126,9 @@ output = feedForwardAutoencoder(opttheta, params.hiddenSize, params.visibleSize,
 out_img = img_recons(output,m,n,params.patchsize);
 subplot(3,1,3);imshow(out_img,[])
 savefig('testing example.png','png')
+%%======================================================================
+%% OPTIONAL: Cross Validation
+% [error_train,error_val] = crossValidate(X_train,X_val,lambda, sparsityParam, beta,...
+%                                                    hiddenSize,visibleSize,type_train);
+                                                   
+
