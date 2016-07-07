@@ -14,7 +14,7 @@ function [h, array] = display_network(A, opt_normalize, opt_graycolor, cols, opt
 warning off all
 
 if ~exist('opt_normalize', 'var') || isempty(opt_normalize)
-    opt_normalize= false;
+    opt_normalize= true;
 end
 
 if ~exist('opt_graycolor', 'var') || isempty(opt_graycolor)
