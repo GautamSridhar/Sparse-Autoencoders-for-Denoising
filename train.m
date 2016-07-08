@@ -22,9 +22,9 @@ params.alpha = 0.1;
 %
 %  After implementing sampleIMAGES, the display_network command should
 %  display a random sample of 200 patches from the dataset
-% patches = sampleIMAGES(params.train_type,params.patchsize);
-% save 'patches.mat'patches
-load patches_n
+patches = sampleIMAGES(params.train_type,params.patchsize);
+save('patches_n_7.mat','patches')
+%load patches_n
 display_network(patches(:,randi(size(patches,2),200,1),1));
 [p,q,~] = size(patches);
 

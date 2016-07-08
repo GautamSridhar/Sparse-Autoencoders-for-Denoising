@@ -1,9 +1,9 @@
 function s_d = create_search_dict()
 
-sim_wind =3;
+sim_wind =7;
 srcFiles = dir('/nfs4/gautam/Documents/MATLAB/images/ImageNet_train_100/*.JPEG'); 
 
-for k = 1 : 50
+for k = 1 : 10
     %Reading the image files
 
     filename = strcat('/nfs4/gautam/Documents/MATLAB/images/ImageNet_train_100/',srcFiles(k).name);
@@ -23,4 +23,5 @@ for k = 1 : 50
     end
 
 end
+save('s_d7.mat','s_d')
 end

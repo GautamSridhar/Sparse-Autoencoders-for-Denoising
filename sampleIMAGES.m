@@ -7,13 +7,13 @@ load IMAGES_IN;    % load images from disk
  %AE input patchsize
 
 % s =(patchsize-1)/2 ; 
-sim_wind = 3;   % measure of side of patch for similarity 
+sim_wind = 7;   % measure of side of patch for similarity 
 numpatches = 10000;
 swind_hsize = (sim_wind-1)/2;% half size of search window
 s = swind_hsize;
 % Initialize patches with zeros.  Your code will fill in this matrix--one
 % column per patch, 10000 columns.
-load s_d
+load s_d7
 patches = zeros(patchsize*patchsize, numpatches,2);
 
 %% ---------- YOUR CODE HERE --------------------------------------
@@ -73,8 +73,8 @@ end
 % Specifically, since the output of the network is bounded between [0,1]
 % (due to the sigmoid activation function), we have to make sure 
 % the range of pixel values is also bounded between [0,1]
-% patches(:,:,1) = normalizeData(patches(:,:,1));
-% patches(:,:,2) = normalizeData(patches(:,:,2));
+patches(:,:,1) = normalizeData(patches(:,:,1));
+patches(:,:,2) = normalizeData(patches(:,:,2));
 
 end
 
