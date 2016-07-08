@@ -9,11 +9,11 @@ close all
 params.patchsize = 21;
 params.visibleSize = params.patchsize* params.patchsize;   % number of input units 
 params.hiddenSize = 600;     % number of hidden units 
-params.sparsityParam = 0.01;   % desired average activation of the hidden units.
+params.sparsityParam = 0.05;   % desired average activation of the hidden units.
                      % (This was denoted by the Greek alphabet rho, which looks like a lower-case "p",
 		     %  in the lecture notes). 
-params.lambda = 0.0001;     % weight decay parameter       
-params.beta =0.0001;            % weight of sparsity penalty term       
+params.lambda = 0.00001;     % weight decay parameter       
+params.beta =0.001;            % weight of sparsity penalty term       
 params.train_type = 0; % 0 or 1 depending on repeated and non repeated case
 params.batchsize = 250;
 params.alpha = 0.1;
@@ -92,7 +92,8 @@ options.Method = 'LBFGS'; % Here, we use conjugate gradient to optimize our cost
                           % function. L-BFGS can also be used as in the original exercise 
                           % code
 %[opttheta, cost,exitflag,output]= minFunc(@(p)sparseAutoencoderCost(p,params.visibleSize,params.hiddenSize,params.lambda,params.sparsityParam,params.beta,Xtrain,params.train_type),theta,options);                         
-[opttheta, cost] = fmincg(@(p)sparseAutoencoderCost(p,params.visibleSize,params.hiddenSize,params.lambda,params.sparsityParam,params.beta,Xtrain,params.train_type),theta,options,Xval,params); 
+[opttheta, cost] = fmincg(@(p)sparseAutoencoderCost(p,params.visibleSize,params.hiddenSize,params.lambda,params.sparsityParam,params.beta,Xtrain,params.patchsize, ...
+    params.train_type),theta,options,Xval,params); 
 %%======================================================================
 %% STEP 5: Visualization 
 

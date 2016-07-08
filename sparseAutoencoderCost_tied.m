@@ -1,6 +1,6 @@
-function [cost,grad] = sparseAutoencoderCost(theta, visibleSize, hiddenSize, ...
-                                             lambda, sparsityParam, beta, data,patchsize,train_type)
-
+function [cost,grad] = sparseAutoencoderCost_tied(theta, visibleSize, hiddenSize, ...
+                                             lambda, sparsityParam, beta, data,train_type)
+patchsize =21;
 % visibleSize: the number of input units (probably 64) 
 % hiddenSize: the number of hidden units (probably 25) 
 % lambda: weight decay parameter
@@ -13,7 +13,8 @@ function [cost,grad] = sparseAutoencoderCost(theta, visibleSize, hiddenSize, ...
 % We first convert theta to the (W1, W2, b1, b2) matrix/vector format, so that this 
 % follows the notation convention of the lecture notes. 
 W1 = reshape(theta(1:hiddenSize*visibleSize), hiddenSize, visibleSize);
-W2 = reshape(theta(hiddenSize*visibleSize+1:2*hiddenSize*visibleSize), visibleSize, hiddenSize);
+%W2 = reshape(theta(hiddenSize*visibleSize+1:2*hiddenSize*visibleSize), visibleSize, hiddenSize);
+W2 = W1';
 b1 = theta(2*hiddenSize*visibleSize+1:2*hiddenSize*visibleSize+hiddenSize);
 b2 = theta(2*hiddenSize*visibleSize+hiddenSize+1:end);
 
@@ -84,6 +85,7 @@ nablab2 = delta3;
  
 W1grad = nablaW1 ./ nSamples + lambda .* W1;
 W2grad = nablaW2 ./ nSamples + lambda .* W2;
+Wgrad = W1grad+W2grad;
 b1grad = sum(nablab1, 2) ./ nSamples;
 b2grad = sum(nablab2, 2) ./ nSamples;
  
@@ -92,7 +94,7 @@ b2grad = sum(nablab2, 2) ./ nSamples;
 % to a vector format (suitable for minFunc). Specifically, we will unroll
 % your gradient matrices into a vector.
  
-grad = [W1grad(:) ; W2grad(:) ; b1grad(:) ; b2grad(:)];
+grad = [Wgrad(:) ; Wgrad(:) ; b1grad(:) ; b2grad(:)];
  
 end
  
