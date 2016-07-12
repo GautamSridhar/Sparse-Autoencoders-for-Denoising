@@ -1,4 +1,4 @@
-function [X, cost,i] = fmincg(f, X, options,Xval,params, P1, P2, P3, P4, P5)
+function [X, cost,i] = fmincg(f, X, options,Xval,Yval,params, P1, P2, P3, P4, P5)
 % Minimize a continuous differentialble multivariate function. Starting point
 % is given by "X" (D by 1), and the function named in the string "f", must
 % return a function value and a vector of partial derivatives. The Polack-
@@ -95,7 +95,7 @@ while i < abs(length)                                      % while not finished
   
   a_out = feedForwardAutoencoder(X,params.hiddenSize,params.visibleSize,Xval(:,:,1)');
   
-  f_valid = mean(sqrt(sum(((a_out -Xval(:,:,2)').^2),2)),1);
+  f_valid = mean(sqrt(sum(((a_out -Yval(:,:,2)').^2),2)),1);
   
   [f2 df2] = eval(argstr);
   i = i + (length<0);                                          % count epochs?!

@@ -1,6 +1,6 @@
 %% comment put the part before load patches to avoid fresh creation of testing dataset
-clear all
-close all
+% clear all
+% close all
 
 %%======================================================================
 %% STEP 0: Here we provide the relevant parameters values that will
@@ -22,14 +22,17 @@ params.alpha = 0.1;
 %
 %  After implementing sampleIMAGES, the display_network command should
 %  display a random sample of 200 patches from the dataset
-patches = sampleIMAGES(params.train_type,params.patchsize);
-save('patches_n_7.mat','patches')
+%[patches,patches_norm] = sampleIMAGES(params.train_type,params.patchsize);
+% save('patches_n_7.mat','patches')
+% save('patches_n_7_norm.mat','patches_norm')
 %load patches_n
 display_network(patches(:,randi(size(patches,2),200,1),1));
 [p,q,~] = size(patches);
 
-Xtrain = patches(:,1:ceil(0.6*q),:);
-Xval = patches(:,ceil(0.6*q)+1:end,:);
+Ytrain = patches(:,1:ceil(0.6*q),:);
+Xtrain = patches_norm(:,1:ceil(0.6*q),:);
+Yval = patches(:,ceil(0.6*q)+1:end,:);
+Xval = patches_norm(:,ceil(0.6*q)+1:end,:); 
 
 %  Obtain random parameters theta
 %theta = initializeParameters(params.hiddenSize, params.visibleSize);
@@ -92,8 +95,8 @@ options.Method = 'LBFGS'; % Here, we use conjugate gradient to optimize our cost
                           % function. L-BFGS can also be used as in the original exercise 
                           % code
 %[opttheta, cost,exitflag,output]= minFunc(@(p)sparseAutoencoderCost(p,params.visibleSize,params.hiddenSize,params.lambda,params.sparsityParam,params.beta,Xtrain,params.train_type),theta,options);                         
-[opttheta, cost] = fmincg(@(p)sparseAutoencoderCost(p,params.visibleSize,params.hiddenSize,params.lambda,params.sparsityParam,params.beta,Xtrain,params.patchsize, ...
-    params.train_type),theta,options,Xval,params); 
+[opttheta, cost] = fmincg(@(p)sparseAutoencoderCost(p,params.visibleSize,params.hiddenSize,params.lambda,params.sparsityParam,params.beta,Xtrain,Ytrain,params.patchsize, ...
+    params.train_type),theta,options,Xval,Yval,params); 
 %%======================================================================
 %% STEP 5: Visualization 
 

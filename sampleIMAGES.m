@@ -1,4 +1,4 @@
-function patches = sampleIMAGES(train_type,patchsize)
+function [patches,patches_norm] = sampleIMAGES(train_type,patchsize)
 % sampleIMAGES
 % Returns 10000 patches for training
 
@@ -65,6 +65,7 @@ for  i=1:numpatches
             disp('not a valid option')
     end
     clear patch_dictionary_mod
+    i
 end
 
 
@@ -73,8 +74,8 @@ end
 % Specifically, since the output of the network is bounded between [0,1]
 % (due to the sigmoid activation function), we have to make sure 
 % the range of pixel values is also bounded between [0,1]
-patches(:,:,1) = normalizeData(patches(:,:,1));
-patches(:,:,2) = normalizeData(patches(:,:,2));
+patches_norm(:,:,1) = normalizeData(patches(:,:,1));
+patches_norm(:,:,2) = normalizeData(patches(:,:,2));
 
 end
 
