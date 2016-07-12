@@ -2,7 +2,8 @@
 clear all;
 close all;
 
-load patches
+load patches_norm_7
+patches = patches_norm;
 train_x = patches(:,:,1)';
 train_x_gaussian = add_noise(patches(:,:,1),21);
 train_x_gaussian =train_x_gaussian' ;
@@ -58,6 +59,24 @@ nn.dropoutFraction                  = 0;
 nn.W{1} = sae.ae{1}.W{1}; % stores the weights got by auto encoding in nn.w{1}
 nn.W{2} = sae.ae{1}.W{2};
 [nn, L]  = nntrain(nn, train_x_gaussian, train_x, opts);
-save('nn_trained','nn');
+
+
+figure;
+subplot(1,2,1);
+plot(nn.Loss,'-b');
+% legend('only first derivative','with second derivative');
+title('Plot of Loss function');
+xlabel('number of runs on training data');
+ylabel('Loss')
+hold off
+subplot(1,2,2)
+plot(nn.epochloss, '-b');
+% legend('only first derivative','with second derivative');
+title('Plot of loss in each epoch');
+xlabel('number of epochs');
+ylabel('epoch loss')
+hold off
 savefig('nn_loss.png','png')
+save('nn_trained','nn');
+
 test_sgd.m

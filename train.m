@@ -8,7 +8,7 @@ close all
 %  change the parameters below.
 params.patchsize = 21;
 params.visibleSize = params.patchsize* params.patchsize;   % number of input units 
-params.hiddenSize = 600;     % number of hidden units 
+params.hiddenSize = 500;     % number of hidden units 
 params.sparsityParam = 0.05;   % desired average activation of the hidden units.
                      % (This was denoted by the Greek alphabet rho, which looks like a lower-case "p",
 		     %  in the lecture notes). 
@@ -35,10 +35,10 @@ figure;display_network(patches_norm(:,str1,1));
 
 [p,q,~] = size(patches);
 
-Ytrain = patches(:,1:ceil(0.6*q),:);
-Xtrain = patches_norm(:,1:ceil(0.6*q),:);
-Yval = patches(:,ceil(0.6*q)+1:end,:);
-Xval = patches_norm(:,ceil(0.6*q)+1:end,:); 
+Ytrain = patches(:,1:ceil(0.9*q),:);
+Xtrain = patches_norm(:,1:ceil(0.9*q),:);
+Yval = patches(:,ceil(0.9*q)+1:end,:);
+Xval = patches_norm(:,ceil(0.9*q)+1:end,:); 
 
 %  Obtain random parameters theta
 %theta = initializeParameters(params.hiddenSize, params.visibleSize);
