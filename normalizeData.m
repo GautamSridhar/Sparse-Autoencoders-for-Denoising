@@ -12,3 +12,4 @@ patches = max(min(patches, pstd), -pstd) / pstd;
 
 % Rescale from [-1,1] to [0.1,0.9]
 patches = (patches + 1) * 0.4 + 0.1;
+end

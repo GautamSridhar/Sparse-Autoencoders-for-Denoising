@@ -1,6 +1,6 @@
 %% comment put the part before load patches to avoid fresh creation of testing dataset
-% clear all
-% close all
+clear all
+close all
 
 %%======================================================================
 %% STEP 0: Here we provide the relevant parameters values that will
@@ -25,8 +25,14 @@ params.alpha = 0.1;
 %[patches,patches_norm] = sampleIMAGES(params.train_type,params.patchsize);
 % save('patches_n_7.mat','patches')
 % save('patches_n_7_norm.mat','patches_norm')
-%load patches_n
-display_network(patches(:,randi(size(patches,2),200,1),1));
+load patches_norm_7
+load patches_7
+
+str1 = randi(size(patches,2),200,1);
+
+display_network(patches(:,str1,1));
+figure;display_network(patches_norm(:,str1,1));
+
 [p,q,~] = size(patches);
 
 Ytrain = patches(:,1:ceil(0.6*q),:);
