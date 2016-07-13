@@ -124,7 +124,7 @@ testData =imnoise(testData,'speckle');
 
 subplot(3,1,2);
 imshow(testData,[])
-test_patches = test_patch_create(testData,params.patchsize);
+[test_patches,~] = test_patch_create(testData,params.patchsize);
 
 %output = feedForwardAutoencoder(opttheta, hiddenSize, visibleSize, testData);
 %output_image = reshape(output, [21 21]);
