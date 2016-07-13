@@ -30,7 +30,7 @@
     
     [s_d_testing,~] = test_patch_create(img,sim_wind);
     
-    img_padded = padarray(double(img),[sim_wind-rem(m,sim_wind),sim_wind-rem(n,sim_wind)],'replicate');
+    img_padded = padarray(double(img),[sim_wind-rem(m,sim_wind),sim_wind-rem(n,sim_wind)],'replicate','post');
     %out = zeros(patchsize^2,m*n);
     mean_vec = zeros(1,m*n);
     [u,v] = size(img_padded);
@@ -45,10 +45,10 @@
         end
     end
     
-    [out,mean_p] = normalizaData_t(out);
+    [out,mean_p] = normalizeData_t(out);
     
     subplot(2,2,3);
-    imshow(reshape(out,[m,n]),[])
+    imshow(reshape(out,[u/sim_wind,v/sim_wind]),[])
     title('mean')
     
     
