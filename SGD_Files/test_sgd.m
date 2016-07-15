@@ -1,3 +1,4 @@
+patchsize =21;
 testData = imread('cameraman.tif');
 figure; subplot(3,1,1);
 imshow(testData,[])
@@ -12,12 +13,12 @@ testData =imnoise(testData,'speckle');
 
 subplot(3,1,2);
 imshow(testData,[])
-test_patches = test_patch_create(testData,params.patchsize);
+test_patches = test_patch_create(testData,patchsize);
 
 nn_testing = my_nnff(nn,test_patches);
 output = nn_testing.a{3};
 %generate output image
-out_img = img_recons(output,m,n,params.patchsize);
+out_img = img_recons(output,m,n,patchsize);
 subplot(3,1,3);imshow(out_img,[])
 savefig('testing example.png','png')
 
