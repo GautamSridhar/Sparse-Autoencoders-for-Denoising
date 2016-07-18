@@ -35,9 +35,7 @@ figure;display_network(patches_norm(:,str1,1));
 
 [p,q,~] = size(patches);
 
-Ytrain = patches(:,1:ceil(0.9*q),:);
 Xtrain = patches_norm(:,1:ceil(0.9*q),:);
-Yval = patches(:,ceil(0.9*q)+1:end,:);
 Xval = patches_norm(:,ceil(0.9*q)+1:end,:); 
 
 %  Obtain random parameters theta
@@ -101,8 +99,8 @@ options.Method = 'LBFGS'; % Here, we use conjugate gradient to optimize our cost
                           % function. L-BFGS can also be used as in the original exercise 
                           % code
 %[opttheta, cost,exitflag,output]= minFunc(@(p)sparseAutoencoderCost(p,params.visibleSize,params.hiddenSize,params.lambda,params.sparsityParam,params.beta,Xtrain,params.train_type),theta,options);                         
-[opttheta, cost] = fmincg(@(p)sparseAutoencoderCost(p,params.visibleSize,params.hiddenSize,params.lambda,params.sparsityParam,params.beta,Xtrain,Ytrain,params.patchsize, ...
-    params.train_type),theta,options,Xval,Yval,params); 
+[opttheta, cost] = fmincg(@(p)sparseAutoencoderCost(p,params.visibleSize,params.hiddenSize,params.lambda,params.sparsityParam,params.beta,Xtrain,params.patchsize, ...
+    params.train_type),theta,options,Xval,params); 
 %%======================================================================
 %% STEP 5: Visualization 
 
