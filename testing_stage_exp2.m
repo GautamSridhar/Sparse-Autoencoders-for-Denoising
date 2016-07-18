@@ -15,7 +15,7 @@
     img = rgb2gray(img);
     end
     
-    img = img(1:64,1:64);
+    img = img(65:128,65:128);
     img_copy =img;
     figure; subplot(2,2,1);
     imshow(img,[])
@@ -47,14 +47,17 @@
         out_rep(:,i) = patch_rep;
         mean_img_sblock(:,i)= mean(mean(temp_patch));
     end
+    mean_img_sblock = reshape(mean_img_sblock,size(img))' ;
+    mean_img_sblock = mean_img_sblock(:)'; 
     %normalising patches
     [out_norm,mean_p(:,:)] = normalizeData_t(out);
     
     %visualise mean patch
     subplot(2,2,3);
-    imshow(reshape(mean_p,size(img)),[])
+    imshow(reshape(mean_p,size(img))',[])
     title('mean')
-     
+    mean_p = reshape(mean_p,size(img))' ;
+    mean_p = mean_p(:)';
     
     %% Case 1 Taking average of input patches
     
