@@ -1,19 +1,18 @@
-function [patches,patches_norm] = sampleIMAGES(train_type,patchsize)
+function patches = sampleIMAGES()
 % sampleIMAGES
 % Returns 10000 patches for training
 
 load IMAGES_IN;    % load images from disk 
 
- %AE input patchsize
-
-% s =(patchsize-1)/2 ; 
-sim_wind = 7;   % measure of side of patch for similarity 
-numpatches = 10000;
+sim_wind = 5;   % measure of side of patch for similarity 
+patchsize = 15; %AE input patchsize
 swind_hsize = (sim_wind-1)/2;% half size of search window
-s = swind_hsize;
+s =swind_hsize; 
+
+numpatches = 10000;
+
 % Initialize patches with zeros.  Your code will fill in this matrix--one
-% column per patch, 10000 columns.
-load s_d7
+% column per patch, 10000 columns. 
 patches = zeros(patchsize*patchsize, numpatches,2);
 
 %% ---------- YOUR CODE HERE --------------------------------------
@@ -55,8 +54,8 @@ for  i=1:numpatches
     
     out = patch_reconst(patch_dictionary_mod,patchsize,sim_wind);
     patches(:,i,1) = reshape(out,[patchsize^2 1]);
-    
-    switch train_type
+    n = 0;
+    switch n
         case 0
     patches(:,i,2) =reshape(out,[patchsize^2 1]);
         case 1
@@ -74,8 +73,8 @@ end
 % Specifically, since the output of the network is bounded between [0,1]
 % (due to the sigmoid activation function), we have to make sure 
 % the range of pixel values is also bounded between [0,1]
-patches_norm(:,:,1) = normalizeData(patches(:,:,1));
-patches_norm(:,:,2) = normalizeData(patches(:,:,2));
+patches(:,:,1) = normalizeData(patches(:,:,1));
+patches(:,:,2) = normalizeData(patches(:,:,2));
 
 end
 
