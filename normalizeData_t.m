@@ -1,8 +1,9 @@
-function [patches, mean_p] = normalizeData_t(patches)
+function [patches_out, mean_p] = normalizeData_t(patches)
 
 % Squash data to [0.1, 0.9] since we use sigmoid as the activation
 % function in the output layer
-mean_p = mean(patches);
+%mean_p = mean(patches);
+mean_p = block_mean(patches,5);
 % Remove DC (mean of images). 
 patches = bsxfun(@minus, patches, mean(patches));
 
@@ -11,6 +12,6 @@ pstd = 3 * std(patches(:));
 patches = max(min(patches, pstd), -pstd) / pstd;
 
 % Rescale from [-1,1] to [0.1,0.9]
-patches = (patches + 1) * 0.4 + 0.1;
+patches_out = (patches + 1) * 0.4 + 0.1;
 
 end
