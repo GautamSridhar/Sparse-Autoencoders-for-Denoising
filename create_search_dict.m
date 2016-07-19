@@ -2,12 +2,13 @@ function s_d = create_search_dict()
 
 sim_wind =3;
 
-srcFiles = dir('/nfs4/gautam/Documents/MATLAB/images/ImageNet_train_100/*.JPEG'); 
+srcFiles = dir('~/Documents/MATLAB/All fluorescence microscopy files - Abhijit/images/ImageNet_train_100/*.JPEG'); 
 
-for k = 1 : 50
+
+for k = 1 : 10
     %Reading the image files
 
-    filename = strcat('/nfs4/gautam/Documents/MATLAB/images/ImageNet_train_100/',srcFiles(k).name);
+    filename = strcat('~/Documents/MATLAB/All fluorescence microscopy files - Abhijit/images/ImageNet_train_100/',srcFiles(k).name);
     I = imread(filename);
     if (size(I,3)==3)
     I = rgb2gray(I);

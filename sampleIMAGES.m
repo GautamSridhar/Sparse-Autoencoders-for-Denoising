@@ -1,19 +1,18 @@
-function patches = sampleIMAGES(train_type,patchsize)
+function patches = sampleIMAGES()
 % sampleIMAGES
 % Returns 10000 patches for training
 
 load IMAGES_IN;    % load images from disk 
 
- %AE input patchsize
-
-% s =(patchsize-1)/2 ; 
-sim_wind = 3;   % measure of side of patch for similarity 
-numpatches = 10000;
+sim_wind = 5;   % measure of side of patch for similarity 
+patchsize = 15; %AE input patchsize
 swind_hsize = (sim_wind-1)/2;% half size of search window
-s = swind_hsize;
+s =swind_hsize; 
+
+numpatches = 10000;
+
 % Initialize patches with zeros.  Your code will fill in this matrix--one
-% column per patch, 10000 columns.
-load s_d
+% column per patch, 10000 columns. 
 patches = zeros(patchsize*patchsize, numpatches,2);
 
 %% ---------- YOUR CODE HERE --------------------------------------
@@ -54,8 +53,9 @@ for  i=1:numpatches
     patch_dictionary_mod = vertcat(reshape(temp_patch,[1 sim_wind^2]),patch_dictionary_mod);
     
     out = patch_reconst(patch_dictionary_mod,patchsize,sim_wind);
-    patches(:,i,1) = reshape(out,[patchsize^2 1]);    
-    switch train_type
+    patches(:,i,1) = reshape(out,[patchsize^2 1]);
+    n = 0;
+    switch n
         case 0
     patches(:,i,2) =reshape(out,[patchsize^2 1]);
         case 1
@@ -64,6 +64,7 @@ for  i=1:numpatches
             disp('not a valid option')
     end
     clear patch_dictionary_mod
+    i
 end
 
 
