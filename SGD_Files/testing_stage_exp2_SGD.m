@@ -2,9 +2,10 @@
     close all
     
     load sae_file_structure.mat
+    load nn_trained.mat
     %parameters
-    sim_wind = 5;   % measure of side of patch for similarity 
-    patchsize = 15; %AE input patchsize
+    sim_wind = 7;   % measure of side of patch for similarity 
+    patchsize = 21; %AE input patchsize
     swind_hsize = (sim_wind-1)/2;% half size of search window
     s =swind_hsize; 
     
@@ -62,15 +63,23 @@
     %% Case 1 Taking average of input patches
     
     %feedforward testing patches
-    nn = nnsetup([225 400 225]);
-    nn.output                           = 'sigm';
-    nn.activation_function              = 'sigm';
+    nn_test = nnsetup([441 600 441]);
+    nn_test.output                           = 'sigm';
+    nn_test.activation_function              = 'sigm';
     opts.numepochs = 1000;
     opts.batchsize = 50;
-    nn.dropoutFraction                  = 0;
-    nn.W{1} = sae.ae{1}.W{1}; 
-    nn.W{2} = sae.ae{1}.W{2};
-    nn_testing = my_nnff(nn,out_norm');
+    nn_test.dropoutFraction                  = 0;
+    
+% %     % load SAE weights 
+% %     nn_test.W{1} = sae.ae{1}.W{1}; 
+% %     nn_test.W{2} = sae.ae{1}.W{2};
+    
+    %load nn weights
+    
+    nn_test.W{1} = nn.W{1}; 
+    nn_test.W{2} = nn.W{2};
+    
+    nn_testing = my_nnff(nn_test,out_norm');
     
     output = nn_testing.a{3};
     
@@ -96,7 +105,7 @@
     
  %% Case 2 Taking mean of individual blocks and adding zero mean AE output
    
-    nn_testing = my_nnff(nn,out');
+    nn_testing = my_nnff(nn_test,out');
     output1 = nn_testing.a{3};
     [output_1,~] = normalizeData_t(output1);
     
@@ -157,7 +166,7 @@
    %% Case 4 Taking average of input patches
     
     out_norm_rep = normalizeData_t(out_rep);
-    nn_testing = my_nnff(nn,out_norm_rep');
+    nn_testing = my_nnff(nn_test,out_norm_rep');
     
     output = nn_testing.a{3};
     
@@ -192,7 +201,7 @@
     
  %% Case 5 Taking mean of individual blocks and adding zero mean AE output
    
-    nn_testing = my_nnff(nn,out_rep');
+    nn_testing = my_nnff(nn_test,out_rep');
     output1 = nn_testing.a{3};
     [output_1,~] = normalizeData_t(output1);
     

@@ -1,4 +1,5 @@
 function patches = sampleIMAGES()
+
 % sampleIMAGES
 % Returns 10000 patches for training
 
