@@ -6,7 +6,6 @@ numel = size(patches,1);
 l= (patchsize-1)/2;
 assert(m*n == numel,'recheck the image vector');
 img = zeros(m,n);
-
 for k = 1:numel
     temp_patch = reshape(patches(k,:),[patchsize,patchsize]);
     if (mod(k,n) ==0)

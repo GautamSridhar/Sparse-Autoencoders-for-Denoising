@@ -8,12 +8,12 @@ close all
 %  change the parameters below.
 params.patchsize = 21;
 params.visibleSize = params.patchsize* params.patchsize;   % number of input units 
-params.hiddenSize = 500;     % number of hidden units 
-params.sparsityParam = 0.05;   % desired average activation of the hidden units.
+params.hiddenSize = 600;     % number of hidden units 
+params.sparsityParam = 0.01;   % desired average activation of the hidden units.
                      % (This was denoted by the Greek alphabet rho, which looks like a lower-case "p",
 		     %  in the lecture notes). 
 params.lambda = 0.0001;     % weight decay parameter       
-params.beta = 0.01;            % weight of sparsity penalty term       
+params.beta =0.0001;            % weight of sparsity penalty term       
 params.train_type = 0; % 0 or 1 depending on repeated and non repeated case
 params.batchsize = 250;
 params.alpha = 0.1;
@@ -22,11 +22,10 @@ params.alpha = 0.1;
 %
 %  After implementing sampleIMAGES, the display_network command should
 %  display a random sample of 200 patches from the dataset
-load patches
 % patches = sampleIMAGES(params.train_type,params.patchsize);
-display_network(patches(:,randi(size(patches,2),200,1),1),8);
-% save patches
-
+% save 'patches.mat'patches
+load patches_n
+display_network(patches(:,randi(size(patches,2),200,1),1));
 [p,q,~] = size(patches);
 
 Xtrain = patches(:,1:floor(0.8*q),:);
@@ -48,33 +47,33 @@ Xval = patches(:,ceil(0.8*q)+1:end,:);
 %                                      params.sparsityParam, params.beta, patches,train_type);
 % 
 % %%======================================================================
-% %% STEP 3: Gradient Checking
-% %
-% % Hint: If you are debugging your code, performing gradient checking on smaller models 
-% % and smaller training sets (e.g., using only 10 training examples and 1-2 hidden 
-% % units) may speed things up.
+% STEP 3: Gradient Checking
+
+% Hint: If you are debugging your code, performing gradient checking on smaller models 
+% and smaller training sets (e.g., using only 10 training examples and 1-2 hidden 
+% units) may speed things up.
 % 
-% % First, lets make sure your numerical gradient computation is correct for a
-% % simple function.  After you have implemented computeNumericalGradient.m,
-% % run the following: 
+% First, lets make sure your numerical gradient computation is correct for a
+% simple function.  After you have implemented computeNumericalGradient.m,
+% run the following: 
 % checkNumericalGradient();
-% 
+% % 
 % % Now we can use it to check your cost function and derivative calculations
 % % for the sparse autoencoder.  
 % numgrad = computeNumericalGradient( @(x) sparseAutoencoderCost(x, params.visibleSize, ...
 %                                                  params.hiddenSize, params.lambda, ...
 %                                                   params.sparsityParam, params.beta, ...
-%                                                  patches,train_type), theta);
+%                                                  Xtrain,params.train_type), theta);
 % 
 % % Use this to visually compare the gradients side by side
 % disp([numgrad grad]); 
 % 
-% % Compare numerically computed gradients with the ones obtained from backpropagation
+% %Compare numerically computed gradients with the ones obtained from backpropagation
 % diff = norm(numgrad-grad)/norm(numgrad+grad);
 % disp(diff); % Should be small. In our implementation, these values are
-%             % usually less than 1e-9.
+%             %usually less than 1e-9.
 % 
-%             % When you got this working, Congratulations!!! 
+%             %When you got this working, Congratulations!!! 
 
 %%======================================================================
 %% STEP 4: After verifying that your implementation of
@@ -88,11 +87,11 @@ theta = initializeParameters(params.hiddenSize, params.visibleSize);
 %addpath minFunc/
 
 options = optimset('MaxIter', 600);	  % Maximum number of iterations of L-BFGS to run 
-%options.display = 'on';
-% options.Method = 'LBFGS'; % Here, we use conjugate gradient to optimize our cost
+options.display = 'on';
+options.Method = 'LBFGS'; % Here, we use conjugate gradient to optimize our cost
                           % function. L-BFGS can also be used as in the original exercise 
                           % code
-                          
+%[opttheta, cost,exitflag,output]= minFunc(@(p)sparseAutoencoderCost(p,params.visibleSize,params.hiddenSize,params.lambda,params.sparsityParam,params.beta,Xtrain,params.train_type),theta,options);                         
 [opttheta, cost] = fmincg(@(p)sparseAutoencoderCost(p,params.visibleSize,params.hiddenSize,params.lambda,params.sparsityParam,params.beta,Xtrain,params.train_type),theta,options,Xval,params); 
 %%======================================================================
 %% STEP 5: Visualization 
@@ -107,8 +106,15 @@ savefig('kernels.png','png')
 testData = imread('cameraman.tif');
 figure; subplot(3,1,1);
 imshow(testData,[])
-testData = imnoise(testData,'gaussian');
-testData =imnoise(testData,'poisson');
+
+% testData = imnoise(testData,'gaussian',0,0.01);
+% testData =imnoise(testData,'poisson');
+% testData =imnoise(testData,'speckle',0.2);
+
+G = fspecial('gaussian',[3,3],1);
+%testData = imnoise(testData,'gaussian',0,0.001);
+testData = imfilter(testData,G,'same');
+%testData =imnoise(testData,'salt & pepper');
 testData =imnoise(testData,'speckle');
 [m,n] = size(testData);
 

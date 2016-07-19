@@ -1,7 +1,8 @@
 .[oa]
-.jpg
+*.jpg
 *.m~
-.png
-.tif
-.fig
-.mat
+*.png
+*.tif
+*.fig
+*.mat
+*.tif
