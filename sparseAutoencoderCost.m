@@ -1,6 +1,6 @@
 function [cost,grad] = sparseAutoencoderCost(theta, visibleSize, hiddenSize, ...
-                                             lambda, sparsityParam, beta, data,train_type)
-patchsize =21;
+                                             lambda, sparsityParam, beta, data,train_type,patchsize)
+
 % visibleSize: the number of input units (probably 64) 
 % hiddenSize: the number of hidden units (probably 25) 
 % lambda: weight decay parameter

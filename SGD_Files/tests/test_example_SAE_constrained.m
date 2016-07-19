@@ -79,4 +79,5 @@ hold off
 savefig('nn_loss.png','png')
 save('nn_trained','nn');
 
-test_sgd.m
+%test_sgd.m
+testing_stage_exp2_SGD.m
